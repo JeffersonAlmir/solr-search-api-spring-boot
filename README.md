@@ -31,21 +31,13 @@ git clone https://github.com/seu-usuario/solr-spring.git
 cd solr-spring
 ```
 
-**2. Crie o arquivo `.env` na raiz do projeto**
-
-```env
-POSTGRES_DB=example-solr
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=sua_senha_aqui
-```
-
-**3. Suba os containers**
+**2. Suba os containers**
 
 ```bash
 docker-compose up -d
 ```
 
-**4. Acompanhe os logs**
+**3. Acompanhe os logs**
 
 ```bash
 docker-compose logs -f
