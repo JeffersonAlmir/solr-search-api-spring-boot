@@ -8,6 +8,7 @@ import com.example.sorl.entity.Produto;
 import com.example.sorl.mapper.ProdutoMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +34,7 @@ public class ProdutoServiceFacade implements ProdutoService{
         );
     }
 
+    @Transactional
     @Override
     public ProdutoResponseDTO salvar(ProdutoRequestDTO dto) {
         ProdutoResponseDTO produtoSave = produtoServiceImp.salvar(dto);
@@ -53,12 +55,14 @@ public class ProdutoServiceFacade implements ProdutoService{
                 .toList();
     }
 
+    @Transactional
     @Override
     public void deletar(Long id) {
         produtoServiceImp.deletar(id);
         documentSolrService.deletar(id);
     }
 
+    @Transactional
     @Override
     public ProdutoResponseDTO atualizar( Long id, ProdutoRequestDTO dto) {
         ProdutoResponseDTO atualizado = produtoServiceImp.atualizar( id ,dto);
