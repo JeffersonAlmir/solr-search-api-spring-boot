@@ -7,11 +7,11 @@ import com.example.sorl.entity.Produto;
 import com.example.sorl.exceptions.ResourceNotFoundException;
 import com.example.sorl.mapper.ProdutoMapper;
 import com.example.sorl.repository.ProdutoRepository;
-import org.mapstruct.ap.shaded.freemarker.core.ReturnInstruction;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
+
 
 @Service
 public class ProdutoServiceImp  {
@@ -49,7 +49,7 @@ public class ProdutoServiceImp  {
     }
 
 
-    public ProdutoResponseDTO atualizar(Long id,ProdutoRequestDTO dto) {
+    public ProdutoResponseDTO atualizar(Long id, @NonNull ProdutoRequestDTO dto) {
         Produto updateProduto = produtoRepository.findById(id)
                 .orElseThrow(() ->  new ResourceNotFoundException("Produto não encontrado"));
 
