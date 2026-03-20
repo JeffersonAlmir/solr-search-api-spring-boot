@@ -1,9 +1,11 @@
 package com.example.sorl.controller;
 
 import com.example.sorl.dto.PageDTO;
+import com.example.sorl.dto.ProdutoRequestDTO;
 import com.example.sorl.dto.ProdutoResponseDTO;
 import com.example.sorl.entity.Produto;
 import com.example.sorl.service.ProdutoServiceFacade;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,14 +36,14 @@ public class ProdutoController implements ProdutoControllerDocs{
 
     @Override
     @PostMapping
-    public ResponseEntity<Produto> createProduto(@RequestBody Produto produto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoServiceFacade.salvar(produto));
+    public ResponseEntity<ProdutoResponseDTO> createProduto(@RequestBody @Valid ProdutoRequestDTO produtoRequestDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoServiceFacade.salvar(produtoRequestDTO));
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> updateProduto(@PathVariable Long id, @RequestBody Produto produto){
-        return ResponseEntity.status(HttpStatus.OK).body(produtoServiceFacade.atualizar(id,produto));
+    public ResponseEntity<ProdutoResponseDTO> updateProduto(@PathVariable Long id, @RequestBody @Valid ProdutoRequestDTO produtoRequestDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(produtoServiceFacade.atualizar(id, produtoRequestDTO));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.sorl.mapper;
 
 
+import com.example.sorl.dto.ProdutoRequestDTO;
 import com.example.sorl.dto.ProdutoResponseDTO;
 import com.example.sorl.dto.ProdutoSolrDTO;
 import com.example.sorl.entity.Produto;
@@ -21,7 +22,7 @@ public interface ProdutoMapper {
 
     ProdutoResponseDTO toDTO(Produto entity);
 
-    Produto toEntity(ProdutoResponseDTO dto);
+    Produto toEntity(ProdutoRequestDTO dto);
 
     @Named("mapId")
     default Long mapId(String id){

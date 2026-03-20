@@ -1,6 +1,7 @@
 package com.example.sorl.controller;
 
 import com.example.sorl.dto.PageDTO;
+import com.example.sorl.dto.ProdutoRequestDTO;
 import com.example.sorl.dto.ProdutoResponseDTO;
 import com.example.sorl.entity.Produto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,13 +32,13 @@ public interface ProdutoControllerDocs {
             summary = "Criar produto",
             description = "Cadastra um novo produto no banco de dados"
     )
-    ResponseEntity<Produto> createProduto(@RequestBody Produto produto);
+    ResponseEntity<ProdutoResponseDTO> createProduto(@RequestBody ProdutoRequestDTO produtoRequestDTO);
 
     @Operation(
             summary = "Atualizar produto",
             description = "Atualiza os dados de um produto existente"
     )
-    ResponseEntity<Produto> updateProduto(@PathVariable Long id, @RequestBody Produto produto);
+    ResponseEntity<ProdutoResponseDTO> updateProduto(@PathVariable Long id, @RequestBody ProdutoRequestDTO produtoRequestDTOo);
 
     @Operation(
             summary = "Deletar produto",

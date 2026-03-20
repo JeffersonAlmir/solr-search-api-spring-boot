@@ -1,6 +1,7 @@
 package com.example.sorl.service;
 
 import com.example.sorl.dto.PageDTO;
+import com.example.sorl.dto.ProdutoRequestDTO;
 import com.example.sorl.dto.ProdutoResponseDTO;
 import com.example.sorl.dto.ProdutoSolrDTO;
 import com.example.sorl.entity.Produto;
@@ -24,19 +25,19 @@ public class ProdutoServiceFacade implements ProdutoService{
         this.produtoMapper = produtoMapper;
     }
 
-    private ProdutoSolrDTO toDTO(Produto produto) {
+    private ProdutoSolrDTO toProdutoSolrDTO(ProdutoResponseDTO produtoResponse) {
         return new ProdutoSolrDTO(
-                String.valueOf(produto.getId()),
-                Collections.singletonList(produto.getNome()),
-                Collections.singletonList(produto.getPreco())
+                String.valueOf(produtoResponse.id()),
+                Collections.singletonList(produtoResponse.nome()),
+                Collections.singletonList(produtoResponse.preco())
         );
     }
 
     @Override
-    public Produto salvar(Produto produto) {
-        Produto produtoSave = produtoServiceImp.salvar(produto);
-        ProdutoSolrDTO dto = toDTO(produtoSave);
-        documentSolrService.salvar(dto);
+    public ProdutoResponseDTO salvar(ProdutoRequestDTO dto) {
+        ProdutoResponseDTO produtoSave = produtoServiceImp.salvar(dto);
+        ProdutoSolrDTO solrDTO = toProdutoSolrDTO(produtoSave);
+        documentSolrService.salvar(solrDTO);
         return produtoSave;
     }
 
@@ -59,10 +60,10 @@ public class ProdutoServiceFacade implements ProdutoService{
     }
 
     @Override
-    public Produto atualizar( Long id, Produto produto) {
-        Produto atualizado = produtoServiceImp.atualizar( id ,produto);
-        ProdutoSolrDTO dto = toDTO(atualizado);
-        documentSolrService.atualizar(dto);
+    public ProdutoResponseDTO atualizar( Long id, ProdutoRequestDTO dto) {
+        ProdutoResponseDTO atualizado = produtoServiceImp.atualizar( id ,dto);
+        ProdutoSolrDTO solrDTO = toProdutoSolrDTO(atualizado);
+        documentSolrService.atualizar(solrDTO);
         return atualizado;
     }
 

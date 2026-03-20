@@ -1,18 +1,20 @@
 package com.example.sorl.service;
 
 import com.example.sorl.dto.PageDTO;
+import com.example.sorl.dto.ProdutoRequestDTO;
 import com.example.sorl.dto.ProdutoResponseDTO;
 import com.example.sorl.entity.Produto;
 import com.example.sorl.exceptions.ResourceNotFoundException;
 import com.example.sorl.mapper.ProdutoMapper;
 import com.example.sorl.repository.ProdutoRepository;
+import org.mapstruct.ap.shaded.freemarker.core.ReturnInstruction;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
-public class ProdutoServiceImp implements ProdutoService {
+public class ProdutoServiceImp  {
 
     private final ProdutoRepository produtoRepository;
     private final ProdutoMapper produtoMapper;
@@ -22,12 +24,14 @@ public class ProdutoServiceImp implements ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-    @Override
-    public Produto salvar(Produto produto){
-        return produtoRepository.save(produto);
+
+    public ProdutoResponseDTO salvar (ProdutoRequestDTO dto){
+        Produto produto = produtoMapper.toEntity(dto);
+        Produto salvo = produtoRepository.save(produto);
+        return produtoMapper.toDTO(salvo);
     }
 
-    @Override
+
     public PageDTO<ProdutoResponseDTO> listar(Pageable pageable) {
         Page<ProdutoResponseDTO> produtoResponseDTOPage = produtoRepository
                 .findAll(pageable)
@@ -36,7 +40,7 @@ public class ProdutoServiceImp implements ProdutoService {
         return new PageDTO<>(produtoResponseDTOPage);
     }
 
-    @Override
+
     public void deletar(Long id) {
         if(!produtoRepository.existsById(id)){
             throw new ResourceNotFoundException("Produto não encontrado");
@@ -44,19 +48,21 @@ public class ProdutoServiceImp implements ProdutoService {
         produtoRepository.deleteById(id);
     }
 
-    @Override
-    public Produto atualizar(Long id,Produto produto) {
+
+    public ProdutoResponseDTO atualizar(Long id,ProdutoRequestDTO dto) {
         Produto updateProduto = produtoRepository.findById(id)
                 .orElseThrow(() ->  new ResourceNotFoundException("Produto não encontrado"));
 
-        if(produto.getNome() != null && !produto.getNome().isBlank()){
-            updateProduto.setNome(produto.getNome());
+        if(dto.nome() != null && !dto.nome().isBlank()){
+            updateProduto.setNome(dto.nome());
         }
 
-        if(produto.getPreco() != null){
-            updateProduto.setPreco(produto.getPreco());
+        if(dto.preco() != null){
+            updateProduto.setPreco(dto.preco());
         }
-        return  produtoRepository.save(updateProduto);
+        Produto salvo = produtoRepository.save(updateProduto);
+
+        return produtoMapper.toDTO(salvo);
     }
 
     public Produto produtoPorId(Long id){
