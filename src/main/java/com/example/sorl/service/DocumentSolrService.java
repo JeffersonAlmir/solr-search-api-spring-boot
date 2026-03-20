@@ -8,6 +8,9 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,6 +27,11 @@ public class DocumentSolrService  {
         this.solrClient = solrClient;
     }
 
+    @Retryable(
+            retryFor = ProdutoSolrException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 2000)
+    )
     public ProdutoSolrDTO salvar(ProdutoSolrDTO produto)  {
 
         try {
@@ -37,6 +45,12 @@ public class DocumentSolrService  {
             log.error("Erro ao salvar produto no Solr", e);
             throw new ProdutoSolrException("Erro ao salvar produto no Solr", e);
         }
+    }
+
+    @Recover
+    public ProdutoSolrDTO recoverSalvar(ProdutoSolrException e, ProdutoSolrDTO produtoSolrDTO){
+        log.warn("Falha nas tentativas de salvar no Solr ID: {}",produtoSolrDTO.getId());
+        return produtoSolrDTO;
     }
 
 
@@ -58,6 +72,11 @@ public class DocumentSolrService  {
         }
     }
 
+    @Retryable(
+            retryFor = ProdutoSolrException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 2000)
+    )
     public void deletar(Long id)  {
         try {
             solrClient.deleteById(String.valueOf(id));
@@ -66,6 +85,11 @@ public class DocumentSolrService  {
             log.error("Erro ao deletar produto no Solr", e);
             throw new ProdutoSolrException("Erro ao deletar produto no Solr", e);
         }
+    }
+
+    @Recover
+    public void recoverDelete(ProdutoSolrException e, Long id){
+        log.warn("Falha nas tentativas de deletar objeto no Solr ID: {}",id);
     }
 
     public ProdutoSolrDTO atualizar(ProdutoSolrDTO produto) {
